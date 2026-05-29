@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { User, MapPin, Heart, Package, Lock, LogOut } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
@@ -24,10 +24,15 @@ const tabs = [
 export default function ProfilePage() {
   const { user, isAuthenticated, updateUser, logout } = useAuth();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'profile');
+  const [activeTab, setActiveTab] = useState('profile');
   const [form, setForm] = useState({ firstName: '', lastName: '', phone: '' });
   const [pwForm, setPwForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setActiveTab(params.get('tab') || 'profile');
+  }, []);
+
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {

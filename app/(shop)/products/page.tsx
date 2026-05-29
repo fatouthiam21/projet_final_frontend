@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useCallback } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SlidersHorizontal, X, ChevronDown, Search } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
@@ -32,7 +32,6 @@ const categoryOptions = [
 ];
 
 export default function ProductsPage() {
-  const searchParams = useSearchParams();
   const router = useRouter();
 
   const [products, setProducts] = useState<Product[]>([]);
@@ -42,27 +41,29 @@ export default function ProductsPage() {
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   const [filters, setFilters] = useState<ProductFilters>({
-    category: searchParams.get('category') || '',
-    sort: searchParams.get('sort') || 'newest',
+    category: '',
+    sort: 'newest',
     minPrice: undefined,
     maxPrice: undefined,
     size: '',
-    search: searchParams.get('search') || '',
-    onSale: searchParams.get('onSale') === 'true',
+    search: '',
+    onSale: false,
     page: 1,
     limit: 12,
   });
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
     setFilters((prev) => ({
       ...prev,
-      category: searchParams.get('category') || '',
-      sort: searchParams.get('sort') || 'newest',
-      search: searchParams.get('search') || '',
-      onSale: searchParams.get('onSale') === 'true',
+      category: params.get('category') || '',
+      sort: params.get('sort') || 'newest',
+      search: params.get('search') || '',
+      onSale: params.get('onSale') === 'true',
       page: 1,
     }));
-  }, [searchParams]);
+  }, []);
+
 
   const fetchProducts = useCallback(async () => {
     setLoading(true);
